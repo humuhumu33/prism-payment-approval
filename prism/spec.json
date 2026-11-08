@@ -1,0 +1,104 @@
+{
+  "name": "payment-approval",
+  "title": "Payment approval",
+  "purpose": "decide whether a payment request is approved.",
+  "fields": [
+    {
+      "name": "role",
+      "kind": "choice",
+      "values": [
+        "clerk",
+        "manager"
+      ]
+    },
+    {
+      "name": "amount",
+      "kind": "number",
+      "min": 1
+    },
+    {
+      "name": "limit",
+      "kind": "number"
+    }
+  ],
+  "outcomes": [
+    "approved",
+    "refused"
+  ],
+  "rules": [
+    {
+      "id": "REQ-001",
+      "when": [
+        {
+          "field": "role",
+          "op": "is",
+          "value": "manager"
+        }
+      ],
+      "then": "approved",
+      "says": "when role is manager then approved"
+    },
+    {
+      "id": "REQ-002",
+      "when": [
+        {
+          "field": "amount",
+          "op": "<=",
+          "value": {
+            "field": "limit"
+          }
+        }
+      ],
+      "then": "approved",
+      "says": "when amount is at most limit then approved"
+    }
+  ],
+  "otherwise": "refused",
+  "properties": [
+    {
+      "id": "INV-001",
+      "kind": "never",
+      "when": [
+        {
+          "field": "role",
+          "op": "is",
+          "value": "clerk"
+        },
+        {
+          "field": "amount",
+          "op": ">",
+          "value": {
+            "field": "limit"
+          }
+        }
+      ],
+      "then": "approved",
+      "says": "never when role is clerk and amount > limit then approved"
+    },
+    {
+      "id": "INV-002",
+      "kind": "always",
+      "when": [
+        {
+          "field": "role",
+          "op": "is",
+          "value": "manager"
+        }
+      ],
+      "then": "approved",
+      "says": "always when role is manager then approved"
+    }
+  ],
+  "examples": [
+    {
+      "request": "clerk 250 1000",
+      "response": "approved"
+    },
+    {
+      "request": "clerk 1001 1000",
+      "response": "refused"
+    }
+  ],
+  "schema": "prism/spec/1",
+  "actors": []
+}

@@ -1,0 +1,11 @@
+[application]
+name = "payment-approval"
+version = "0.1.0"
+description = "decide whether a payment request is approved."
+
+[model]
+source = "src"
+watch = ["src/**/*.lex.tex", "language/**/*.toml", "lexlean.toml"]
+
+# Deny by default: an empty set grants the holo nothing.
+[capabilities]
